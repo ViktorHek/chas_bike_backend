@@ -1,3 +1,5 @@
+const fakeData = require('../database/fakeData')
+
 module.exports = function (app) {
   app.put("/register", (req, res) => {
     try {
@@ -16,6 +18,24 @@ module.exports = function (app) {
       res.sendStatus(500);
     }
   });
+
+  app.get("/bikes/all", (req, res) => {
+    try {
+      res.send(fakeData.bikes);
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+  });
+
+  app.get("/user", (req, res) => {
+    try {
+      res.send(fakeData.users[0]);
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+  });
 };
 
 const users = [];
@@ -29,8 +49,15 @@ function login(data) {
   let user = users.filter((el) => el.userName === data.payload.userName);
   if (user.length) {
     if (user[0].password === data.payload.password) {
-      return "Welcom back " + user[0].userName;
+      return user[0]
     }
   }
   return "invalid username or password";
+}
+
+function getCategorys() {
+  let categoryList = []
+  fakeData.forEach(element => {
+    categoryList.push(element.category)
+  });
 }

@@ -36,9 +36,39 @@ module.exports = function (app) {
       res.sendStatus(500);
     }
   });
+
+  app.put("/userhistory", (req, res) => {
+    try {
+      res.send(getHistory(req.body));
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+  });
+
+  app.post("/buy", (req, res) => {
+    try {
+      addHistory(req.body);
+      res.sendStatus(200);
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+  });
+
+  app.post("/add", (req, res) => {
+    try {
+      addBike(req.body);
+      res.sendStatus(200);
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+  });
 };
 
 const users = fakeData.users;
+const bikes = fakeData.bikes;
 
 function registerNewUser(data) {
   let newUser = {
@@ -56,13 +86,16 @@ function registerNewUser(data) {
     events: [],
     pinnedGiftId: 0,
     points: 0,
+    admin: false
   };
   users.push(newUser);
   return "A new user was successfully added";
 }
 
 function login(data) {
-  let user = users.filter((el) => el.userName === data.payload.userName);
+  let user = users.filter(
+    (el) => el.userName.toLocaleLowerCase() === data.payload.userName.toLocaleLowerCase()
+  );
   if (user.length) {
     if (user[0].password == data.payload.password) {
       return user[0];
@@ -76,4 +109,30 @@ function getCategorys() {
   fakeData.forEach((element) => {
     categoryList.push(element.category);
   });
+}
+
+function addHistory(data) {
+  users.forEach((el) => {
+    if(el.userName.toLocaleLowerCase() === data.userName.toLocaleLowerCase()) {
+      el.history.push(data.bike)
+    }
+  })
+}
+
+function getHistory(data) {
+  let returnVal = {user: {}, history: []};
+  let user = users.filter(
+    (el) => el.userName.toLocaleLowerCase() === data.userName.toLocaleLowerCase()
+  );
+  returnVal.user = user[0]
+  user[0].history.forEach((id) => {
+    let bike = fakeData.bikes.filter((el) => el.id == id);
+    returnVal.history.push(bike[0]);
+  });
+  return returnVal;
+}
+
+function addBike(data) {
+  console.log("ddata: ", data)
+  bikes.push(data.payload)
 }

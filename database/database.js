@@ -275,7 +275,7 @@ module.exports = {
       id: "a823c940-2094-4d2f-8944-6c4485c531aa",
       title: "Triathlon/Time Trial Bicycle",
       imgUrl:
-        "https://stradalli.com/pub/media/catalog/product/cache/f24cd5b3443de62f53b9372b627ab773/s/t/stradalli_black_carbon_fiber_time_trial_dura_ace_9000_11_speed_5085mm_wheelset_001.jpg",
+        "https://stat.overdrive.in/wp-content/odgallery/2022/08/63812_2022_Honda_CB300F_DLX_PRO_1_468x263.jpg",
       category: "sport",
     },
     {

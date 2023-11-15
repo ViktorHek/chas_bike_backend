@@ -1,6 +1,10 @@
-const fakeData = require("../database/fakeData");
+const db = require("../database/database");
+const users = db.users;
+let bikes = db.bikes;
 
 module.exports = function (app) {
+
+
   app.put("/register", (req, res) => {
     try {
       res.send(registerNewUser(req.body));
@@ -21,7 +25,7 @@ module.exports = function (app) {
 
   app.get("/bikes/all", (req, res) => {
     try {
-      res.send(fakeData.bikes);
+      res.send(bikes);
     } catch (err) {
       console.log(err);
       res.sendStatus(500);
@@ -30,7 +34,7 @@ module.exports = function (app) {
 
   app.get("/user", (req, res) => {
     try {
-      res.send(fakeData.users[0]);
+      res.send(db.users[0]);
     } catch (err) {
       console.log(err);
       res.sendStatus(500);
@@ -65,10 +69,17 @@ module.exports = function (app) {
       res.sendStatus(500);
     }
   });
-};
 
-const users = fakeData.users;
-const bikes = fakeData.bikes;
+  app.put("/edit", (req, res) => {
+    try {
+      res.send(editBike(req.body));
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+  });
+
+};
 
 function registerNewUser(data) {
   let newUser = {
@@ -106,7 +117,7 @@ function login(data) {
 
 function getCategorys() {
   let categoryList = [];
-  fakeData.forEach((element) => {
+  db.forEach((element) => {
     categoryList.push(element.category);
   });
 }
@@ -126,13 +137,24 @@ function getHistory(data) {
   );
   returnVal.user = user[0]
   user[0].history.forEach((id) => {
-    let bike = fakeData.bikes.filter((el) => el.id == id);
+    let bike = db.bikes.filter((el) => el.id == id);
     returnVal.history.push(bike[0]);
   });
   return returnVal;
 }
 
 function addBike(data) {
-  console.log("ddata: ", data)
   bikes.push(data.payload)
+}
+
+function editBike(data) {
+  let newArr = []
+  bikes.forEach((el) => {
+    if(el.id !== data.payload.id) {
+      newArr.push(el)
+    }
+  })
+  newArr.push(data.payload)
+  bikes = newArr
+  return `${data.payload.handle} is updated`
 }

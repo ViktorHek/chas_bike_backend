@@ -1,6 +1,7 @@
 const db = require("../database/database");
 const users = db.users;
-let bikes = db.bikes;
+let bikes = [];
+db.bikes.forEach((el) => bikes.push(el))
 
 module.exports = function (app) {
 
@@ -79,6 +80,15 @@ module.exports = function (app) {
     }
   });
 
+  app.delete("/delete", (req, res) => {
+    try {
+      res.send(deleteBike(req.query));
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+  });
+
 };
 
 function registerNewUser(data) {
@@ -137,7 +147,7 @@ function getHistory(data) {
   );
   returnVal.user = user[0]
   user[0].history.forEach((id) => {
-    let bike = db.bikes.filter((el) => el.id == id);
+    let bike = bikes.filter((el) => el.id == id);
     returnVal.history.push(bike[0]);
   });
   return returnVal;
@@ -157,4 +167,15 @@ function editBike(data) {
   newArr.push(data.payload)
   bikes = newArr
   return `${data.payload.handle} is updated`
+}
+
+function deleteBike(data) {
+  let newArr = []
+  bikes.forEach((el) => {
+    if(el.id !== data.id) {
+      newArr.push(el)
+    }
+  })
+  bikes = newArr
+  return "bike is deleted"
 }

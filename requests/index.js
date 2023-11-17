@@ -1,7 +1,5 @@
-const db = require("../database/database");
-const users = db.users;
+const users = [];
 let bikes = [];
-db.bikes.forEach((el) => bikes.push(el))
 
 module.exports = function (app) {
 
@@ -35,7 +33,7 @@ module.exports = function (app) {
 
   app.get("/user", (req, res) => {
     try {
-      res.send(db.users[0]);
+      res.send(users[0]);
     } catch (err) {
       console.log(err);
       res.sendStatus(500);
@@ -119,17 +117,12 @@ function login(data) {
   );
   if (user.length) {
     if (user[0].password == data.payload.password) {
-      return user[0];
+      let data = user[0]
+      if(data.userName == "admin") data.admin = true;
+      return data;
     }
   }
   return "invalid username or password";
-}
-
-function getCategorys() {
-  let categoryList = [];
-  db.forEach((element) => {
-    categoryList.push(element.category);
-  });
 }
 
 function addHistory(data) {

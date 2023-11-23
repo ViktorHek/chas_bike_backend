@@ -1,5 +1,7 @@
-const users = [];
-let bikes = [];
+const db = require("../db.js")
+
+const users = db.users;
+let bikes = db.bikes;
 
 module.exports = function (app) {
 
